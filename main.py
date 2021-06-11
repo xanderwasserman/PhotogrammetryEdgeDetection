@@ -1,8 +1,8 @@
 import numpy as np
 import cv2
+import threading
 
-
-def roberts(image):
+def roberts(image, threshold):
     # Roberts mask
     roberts_x = np.array([
         [-1, 0],
@@ -27,14 +27,15 @@ def roberts(image):
 
     for i in range(m):
         for j in range(n):
-            if roberts[i, j] > 127:
+            if roberts[i, j] > threshold:
                 roberts[i, j] = 255
             else:
                 roberts[i, j] = 0
+
     return roberts
 
 
-def prewitt(image):
+def prewitt(image, threshold):
     # Prewitt mask
     prewitt_x = np.array([
         [-1, -1, -1],
@@ -59,14 +60,15 @@ def prewitt(image):
 
     for i in range(m):
         for j in range(n):
-            if prewitt[i, j] > 127:
+            if prewitt[i, j] > threshold:
                 prewitt[i, j] = 255
             else:
                 prewitt[i, j] = 0
+
     return prewitt
 
 
-def sobel(image):
+def sobel(image, threshold):
     # Sobel mask
     sobel_x = np.array([
         [-1, -2, -1],
@@ -91,30 +93,52 @@ def sobel(image):
 
     for i in range(m):
         for j in range(n):
-            if sobel[i, j] > 127:
+            if sobel[i, j] > threshold:
                 sobel[i, j] = 255
             else:
                 sobel[i, j] = 0
-    return sobel
 
+    return sobel
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
 
-    #image = cv2.imread('C:\workspaces/PhotogrammetryWorkspace/test1.jpg', 0)
-    #image = cv2.imread('C:\workspaces/PhotogrammetryWorkspace/test2.jpg', 0)
-    image = cv2.imread('C:\workspaces/PhotogrammetryWorkspace/test3.jpg', 0)
+    image1 = cv2.imread('C:\workspaces/PhotogrammetryWorkspace/test1.jpg', 0)
+    image2 = cv2.imread('C:\workspaces/PhotogrammetryWorkspace/test2.jpg', 0)
+    image3 = cv2.imread('C:\workspaces/PhotogrammetryWorkspace/test3.jpg', 0)
 
-    image = cv2.resize(image, (720,720))
-    cv2.imshow('Original Image', image)
+    image1 = cv2.resize(image1, (720,720))
+    image2 = cv2.resize(image2, (720, 720))
+    image3 = cv2.resize(image3, (720, 720))
 
-    roberts_image = roberts(image)
-    prewitt_image = prewitt(image)
-    sobel_image = sobel(image)
+    threshold = 200
 
-    cv2.imshow('Roberts Edges', roberts_image)
-    cv2.imshow('Prewitt Edges', prewitt_image)
-    cv2.imshow('Sobel Edges', sobel_image)
+    roberts_image1 = roberts(image1, threshold)
+    roberts_image2 = roberts(image2, threshold)
+    roberts_image3 = roberts(image3, threshold)
 
-    if cv2.waitKey(0) & 0xFF == 27:
-        cv2.destroyAllWindows()
+    prewitt_image1 = prewitt(image1, threshold)
+    prewitt_image2 = prewitt(image2, threshold)
+    prewitt_image3 = prewitt(image3, threshold)
+
+    sobel_image1 = sobel(image1, threshold)
+    sobel_image2 = sobel(image2, threshold)
+    sobel_image3 = sobel(image3, threshold)
+
+    cv2.imwrite('Test_Image_1.jpg', image1)
+    cv2.imwrite('Test_Image_2.jpg', image2)
+    cv2.imwrite('Test_Image_3.jpg', image3)
+
+    cv2.imwrite('Roberts_Edges_Test_1_T200.jpg', roberts_image1)
+    cv2.imwrite('Roberts_Edges_Test_2_T200.jpg', roberts_image2)
+    cv2.imwrite('Roberts_Edges_Test_3_T200.jpg', roberts_image3)
+
+    cv2.imwrite('Prewitt_Edges_Test_1_T200.jpg', prewitt_image1)
+    cv2.imwrite('Prewitt_Edges_Test_2_T200.jpg', prewitt_image2)
+    cv2.imwrite('Prewitt_Edges_Test_3_T200.jpg', prewitt_image3)
+
+    cv2.imwrite('Sobel_Edges_Test_1_T200.jpg', sobel_image1)
+    cv2.imwrite('Sobel_Edges_Test_2_T200.jpg', sobel_image2)
+    cv2.imwrite('Sobel_Edges_Test_3_T200.jpg', sobel_image3)
+
+    print('COMPLETED')
